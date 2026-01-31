@@ -1,0 +1,33 @@
+{
+  "name": "llm-as-a-jest",
+  "version": "0.0.1",
+  "description": "jest plugin with llm-as-a-judge matcher basing on g-eval",
+  "main": "dst/index.js",
+  "types": "dst/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/schipiga/llm-as-a-jest.git"
+  },
+  "author": "Sergei Chipiga",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/schipiga/llm-as-a-jest/issues"
+  },
+  "homepage": "https://github.com/schipiga/llm-as-a-jest#readme",
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.1.0",
+    "beeai-framework": "^0.1.26",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "guardrails": "github:schipiga/guardrails"
+  }
+}
