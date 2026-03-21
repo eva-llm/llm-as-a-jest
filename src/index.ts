@@ -1,79 +1,63 @@
-import guardrails from 'guardrails';
+import { llmRubric as llmRubricJudge, gEval as gEvalJudge } from 'eva-judge';
 
-interface LLMAsJudgeOptions {
-    prompt: string;
-    criteria: Record<string, string | { description: string, steps: string[] }>;
+interface LLMRubricOptions {
+    criteria: string | string[];
     threshold?: number;
+    temperature?: number;
+}
+
+interface GEvalOptions {
+    prompt: string;
+    criteria: string | string[];
+    threshold?: number;
+    temperature?: number;
 }
 
 interface PluginConfig {
     provider: string;
     model: string;
+    threshold: number;
+    temperature: number;
 }
 
 let pluginConfig: PluginConfig = {
-    provider: process.env.LLM_PROVIDER || 'openai',
-    model: process.env.LLM_MODEL || 'gpt-4o-mini',
+    provider: 'openai',
+    model: 'gpt-5-mini',
+    threshold: 0.5,
+    temperature: 0.0,
 };
 
 export function configure(config: PluginConfig): void {
     pluginConfig = { ...pluginConfig, ...config };
 }
 
-async function llmAsJudge(
+async function llmRubric(
     this: jest.MatcherContext,
     received: string,
-    options: LLMAsJudgeOptions
+    options: LLMRubricOptions
 ): Promise<jest.CustomMatcherResult> {
-    const { prompt, criteria, threshold } = options;
-
-    // NOTE: ok, AI decided to generate type check but imho it should be handled with joi schema validation or missed at all :)
-    if (typeof received !== 'string') {
-        return {
-            pass: false,
-            message: () => 'Expected received value to be a string',
-        };
-    }
-
-    if (!prompt || typeof prompt !== 'string') {
-        return {
-            pass: false,
-            message: () => 'Expected prompt to be a non-empty string',
-        };
-    }
-
-    if (!criteria || typeof criteria !== 'object' || Object.keys(criteria).length === 0) {
-        return {
-            pass: false,
-            message: () => 'Expected criteria to be a non-empty object',
-        };
-    }
+    const { criteria, threshold, temperature } = options;
+    const _criteria = Array.isArray(criteria) ? criteria : [criteria];
+    const _threshold = threshold ?? pluginConfig.threshold;
+    const _temperature = temperature ?? pluginConfig.temperature;
+    const results: Record<string, any> = {};
+    const failures: string[] = [];
 
     try {
-        const gd = guardrails({
-            provider: pluginConfig.provider,
-            model: pluginConfig.model,
-            criteria,
-            threshold,
-        });
 
-        const results: Record<string, any> = {};
-        const failures: string[] = [];
 
-        // Check each criterion
-        for (const criterion in criteria) {
-            const result = await gd.callTool({
-                name: criterion,
-                arguments: {
-                    prompt,
-                    reply: received,
-                },
-            });
+        for (const criterion of _criteria) {
+            const result = await llmRubricJudge(
+                received,
+                criterion,
+                pluginConfig.provider,
+                pluginConfig.model,
+                { temperature: _temperature },
+            );
 
             results[criterion] = result;
 
-            // If the criterion check fails, add to failures
-            if (result.valid === false) {
+            if (!result.pass || result.score <= _threshold) {
                 failures.push(`Criterion "${criterion}" failed: ${result.reason}`);
             }
         }
@@ -84,28 +68,80 @@ async function llmAsJudge(
             pass,
             message: () => {
                 if (pass) {
-                    return 'Expected LLM-As-A-Judge to fail criteria checks, but all passed.';
+                    return 'Expected LLM-Rubric to fail criteria checks, but all passed.';
                 } else {
-                    return `Expected LLM-As-A-Judge to pass all criteria checks, but some failed:\n${failures.join('\n')}`;
+                    return `Expected LLM-Rubric to pass all criteria checks, but some failed:\n${failures.join('\n')}`;
                 }
             },
         };
     } catch (error) {
         return {
             pass: false,
-            message: () => `LLM-As-A-Judge evaluation failed with error: ${error instanceof Error ? error.message : String(error)}`,
+            message: () => `LLM-Rubric evaluation failed with error: ${error instanceof Error ? error.message : String(error)}`,
+        };
+    }
+}
+
+async function gEval(
+    this: jest.MatcherContext,
+    received: string,
+    options: GEvalOptions
+): Promise<jest.CustomMatcherResult> {
+    const { prompt, criteria, threshold, temperature } = options;
+    const _criteria = Array.isArray(criteria) ? criteria : [criteria];
+    const _threshold = threshold ?? pluginConfig.threshold;
+    const _temperature = temperature ?? pluginConfig.temperature;
+    const results: Record<string, any> = {};
+    const failures: string[] = [];
+
+    try {
+        for (const criterion of _criteria) {
+            const result = await gEvalJudge(
+                prompt,
+                received,
+                criterion,
+                pluginConfig.provider,
+                pluginConfig.model,
+                { temperature: _temperature },
+            );
+
+            results[criterion] = result;
+
+            if (result.score <= _threshold) {
+                failures.push(`Criterion "${criterion}" failed: ${result.reason}`);
+            }
+        }
+
+        const pass = failures.length === 0;
+
+        return {
+            pass,
+            message: () => {
+                if (pass) {
+                    return 'Expected G-Eval to fail criteria checks, but all passed.';
+                } else {
+                    return `Expected G-Eval to pass all criteria checks, but some failed:\n${failures.join('\n')}`;
+                }
+            },
+        };
+    } catch (error) {
+        return {
+            pass: false,
+            message: () => `G-Eval evaluation failed with error: ${error instanceof Error ? error.message : String(error)}`,
         };
     }
 }
 
 expect.extend({
-    llmAsJudge,
+    llmRubric,
+    gEval,
 });
 
 declare global {
     namespace jest {
         interface Matchers<R> {
-            llmAsJudge(options: LLMAsJudgeOptions): Promise<R>;
+            llmRubric(options: LLMRubricOptions): Promise<R>;
+            gEval(options: GEvalOptions): Promise<R>;
         }
     }
 }
