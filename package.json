@@ -1,5 +1,5 @@
 {
-  "name": "llm-as-a-jest",
+  "name": "@eva-llm/llm-as-a-jest",
   "version": "0.1.0",
   "description": "jest plugin with llm-as-a-judge matchers basing on g-eval and llm-rubric",
   "main": "dst/index.js",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/schipiga/llm-as-a-jest.git"
+    "url": "git+https://github.com/eva-llm/llm-as-a-jest.git"
   },
   "author": "Sergei Chipiga",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/schipiga/llm-as-a-jest/issues"
+    "url": "https://github.com/eva-llm/llm-as-a-jest/issues"
   },
-  "homepage": "https://github.com/schipiga/llm-as-a-jest#readme",
+  "homepage": "https://github.com/eva-llm/llm-as-a-jest#readme",
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/node": "^25.1.0",
