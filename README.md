@@ -10,9 +10,9 @@ A Jest plugin for evaluating agent or LLM-generated answers using LLM-based crit
 ## Installation
 
 ```bash
-npm install llm-as-a-jest
+npm install @eva-llm/llm-as-a-jest
 # or
-pnpm add llm-as-a-jest
+pnpm add @eva-llm/llm-as-a-jest
 ```
 
 ## Usage
@@ -74,3 +74,41 @@ await expect(agentAnswer).gEval({
 
 ## License
 MIT
+
+## LLM Providers and Settings
+
+The list of supported LLM providers and their configuration details are available in the README of the [`@eva-llm/eva-judge`](../eva-judge/README.md) package. Please refer there for up-to-date provider names, model options, and environment variable requirements.
+
+## GEvalOptions and LLMRubricOptions
+
+Both matchers accept options objects to customize evaluation:
+
+- **GEvalOptions**
+  - `prompt` (string): The prompt/question to evaluate against. (required)
+  - `criteria` (string | string[]): Criteria or rubric for evaluation. (required)
+  - `threshold` (number, optional): Pass threshold (default: pluginConfig.threshold).
+  - `temperature` (number, optional): LLM temperature (default: pluginConfig.temperature).
+  - `provider` (string, optional): LLM provider to use (overrides global config).
+  - `model` (string, optional): LLM model to use (overrides global config).
+
+- **LLMRubricOptions**
+  - `criteria` (string | string[]): Criteria or rubric for evaluation. (required)
+  - `threshold` (number, optional): Pass threshold (default: pluginConfig.threshold).
+  - `temperature` (number, optional): LLM temperature (default: pluginConfig.temperature).
+  - `provider` (string, optional): LLM provider to use (overrides global config).
+  - `model` (string, optional): LLM model to use (overrides global config).
+
+## Default Plugin Configuration
+
+You can override the default plugin configuration using the `configure` function. The defaults are:
+
+```js
+{
+  provider: 'openai',
+  model: 'gpt-4.1-mini',
+  threshold: 0.5,
+  temperature: 0.0,
+}
+```
+
+Call `configure({ ... })` in your setup to change these values globally for all matchers.

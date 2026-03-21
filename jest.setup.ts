@@ -7,6 +7,8 @@ interface LLMRubricOptions {
     criteria: string | string[];
     threshold?: number;
     temperature?: number;
+    provider?: string;
+    model?: string;
 }
 
 /**
@@ -17,6 +19,8 @@ interface GEvalOptions {
     criteria: string | string[];
     threshold?: number;
     temperature?: number;
+    provider?: string;
+    model?: string;
 }
 
 /**
@@ -56,10 +60,12 @@ async function llmRubric(
     received: string,
     options: LLMRubricOptions
 ): Promise<jest.CustomMatcherResult> {
-    const { criteria, threshold, temperature } = options;
+    const { criteria, threshold, temperature, provider, model } = options;
     const _criteria = Array.isArray(criteria) ? criteria : [criteria];
     const _threshold = threshold ?? pluginConfig.threshold;
     const _temperature = temperature ?? pluginConfig.temperature;
+    const _provider = provider ?? pluginConfig.provider;
+    const _model = model ?? pluginConfig.model;
     const results: Record<string, any> = {};
     const failures: string[] = [];
 
@@ -68,8 +74,8 @@ async function llmRubric(
             const result = await llmRubricJudge(
                 received,
                 criterion,
-                pluginConfig.provider,
-                pluginConfig.model,
+                _provider,
+                _model,
                 { temperature: _temperature },
             );
 
@@ -112,10 +118,12 @@ async function gEval(
     received: string,
     options: GEvalOptions
 ): Promise<jest.CustomMatcherResult> {
-    const { prompt, criteria, threshold, temperature } = options;
+    const { prompt, criteria, threshold, temperature, provider, model } = options;
     const _criteria = Array.isArray(criteria) ? criteria : [criteria];
     const _threshold = threshold ?? pluginConfig.threshold;
     const _temperature = temperature ?? pluginConfig.temperature;
+    const _provider = options.provider ?? pluginConfig.provider;
+    const _model = options.model ?? pluginConfig.model;
     const results: Record<string, any> = {};
     const failures: string[] = [];
 
@@ -125,8 +133,8 @@ async function gEval(
                 prompt,
                 received,
                 criterion,
-                pluginConfig.provider,
-                pluginConfig.model,
+                _provider,
+                _model,
                 { temperature: _temperature },
             );
 
