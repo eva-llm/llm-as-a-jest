@@ -1,11 +1,17 @@
-import { llmRubric as llmRubricJudge, gEval as gEvalJudge } from 'eva-judge';
+import { llmRubric as llmRubricJudge, gEval as gEvalJudge } from '@eva-llm/eva-judge';
 
+/**
+ * Options for the llmRubric matcher.
+ */
 interface LLMRubricOptions {
     criteria: string | string[];
     threshold?: number;
     temperature?: number;
 }
 
+/**
+ * Options for the gEval matcher.
+ */
 interface GEvalOptions {
     prompt: string;
     criteria: string | string[];
@@ -13,6 +19,9 @@ interface GEvalOptions {
     temperature?: number;
 }
 
+/**
+ * Configuration for the LLM plugin.
+ */
 interface PluginConfig {
     provider: string;
     model: string;
@@ -27,10 +36,21 @@ let pluginConfig: PluginConfig = {
     temperature: 0.0,
 };
 
+/**
+ * Configure the LLM plugin for all matchers.
+ * @param config Partial or full plugin configuration to override defaults.
+ */
 export function configure(config: PluginConfig): void {
     pluginConfig = { ...pluginConfig, ...config };
 }
 
+/**
+ * Jest custom matcher for evaluating a string (e.g. agent answer) using LLM-Rubric with criteria.
+ * @param this Jest matcher context
+ * @param received The string to evaluate
+ * @param options LLMRubricOptions for criteria, threshold, and temperature
+ * @returns Promise resolving to a Jest CustomMatcherResult
+ */
 async function llmRubric(
     this: jest.MatcherContext,
     received: string,
@@ -80,6 +100,13 @@ async function llmRubric(
     }
 }
 
+/**
+ * Jest custom matcher for evaluating a string (e.g. agent answer) using G-Eval with a prompt and criteria.
+ * @param this Jest matcher context
+ * @param received The string to evaluate
+ * @param options GEvalOptions for prompt, criteria, threshold, and temperature
+ * @returns Promise resolving to a Jest CustomMatcherResult
+ */
 async function gEval(
     this: jest.MatcherContext,
     received: string,
@@ -130,11 +157,17 @@ async function gEval(
     }
 }
 
+/**
+ * Extends Jest expect with llmRubric and gEval matchers.
+ */
 expect.extend({
     llmRubric,
     gEval,
 });
 
+/**
+ * Adds llmRubric and gEval to Jest's Matchers interface for TypeScript support.
+ */
 declare global {
     namespace jest {
         interface Matchers<R> {
