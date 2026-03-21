@@ -2,8 +2,8 @@
   "name": "@eva-llm/llm-as-a-jest",
   "version": "0.1.0",
   "description": "jest plugin with llm-as-a-judge matchers basing on g-eval and llm-rubric",
-  "main": "dst/index.js",
-  "types": "dst/index.d.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "jest",
@@ -31,7 +31,7 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "eva-judge"
+      "@eva-llm/eva-judge"
     ]
   }
 }

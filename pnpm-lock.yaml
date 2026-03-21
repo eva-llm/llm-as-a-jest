@@ -10,7 +10,7 @@ importers:
     dependencies:
       eva-judge:
         specifier: github:eva-llm/eva-judge
-        version: https://codeload.github.com/eva-llm/eva-judge/tar.gz/165219b561cb1915ec4b309d44ea84228330e0e4
+        version: '@eva-llm/eva-judge@https://codeload.github.com/eva-llm/eva-judge/tar.gz/915f106800789d82d942c0230ffd309ec14a1fdf'
     devDependencies:
       '@types/jest':
         specifier: ^30.0.0
@@ -243,6 +243,11 @@ packages:
 
   '@emnapi/wasi-threads@1.2.0':
     resolution: {integrity: sha512-N10dEJNSsUx41Z6pZsXU8FjPjpBEplgH24sfkmITrBED1/U2Esum9F3lfLrMjKHHjmi557zQn7kR9R+XWXu5Rg==}
+
+  '@eva-llm/eva-judge@https://codeload.github.com/eva-llm/eva-judge/tar.gz/915f106800789d82d942c0230ffd309ec14a1fdf':
+    resolution: {tarball: https://codeload.github.com/eva-llm/eva-judge/tar.gz/915f106800789d82d942c0230ffd309ec14a1fdf}
+    version: 0.1.0
+    engines: {node: '>=22'}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -735,11 +740,6 @@ packages:
     resolution: {integrity: sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==}
     engines: {node: '>=4'}
     hasBin: true
-
-  eva-judge@https://codeload.github.com/eva-llm/eva-judge/tar.gz/165219b561cb1915ec4b309d44ea84228330e0e4:
-    resolution: {tarball: https://codeload.github.com/eva-llm/eva-judge/tar.gz/165219b561cb1915ec4b309d44ea84228330e0e4}
-    version: 0.1.0
-    engines: {node: '>=22'}
 
   eventsource-parser@3.0.6:
     resolution: {integrity: sha512-Vo1ab+QXPzZ4tCa8SwIHJFaSzy4R6SHf7BY79rFBDf0idraZWAkYrDjDj8uWaSm3S2TK+hJ7/t1CEmZ7jXw+pg==}
@@ -1663,6 +1663,17 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
+  '@eva-llm/eva-judge@https://codeload.github.com/eva-llm/eva-judge/tar.gz/915f106800789d82d942c0230ffd309ec14a1fdf':
+    dependencies:
+      '@ai-sdk/anthropic': 3.0.63(zod@4.3.6)
+      '@ai-sdk/google': 3.0.52(zod@4.3.6)
+      '@ai-sdk/mistral': 3.0.27(zod@4.3.6)
+      '@ai-sdk/openai': 3.0.47(zod@4.3.6)
+      ai: 6.0.134(zod@4.3.6)
+      lru-cache: 11.2.7
+      mustache: 4.2.0
+      zod: 4.3.6
+
   '@isaacs/cliui@8.0.2':
     dependencies:
       string-width: 5.1.2
@@ -2210,17 +2221,6 @@ snapshots:
   escape-string-regexp@2.0.0: {}
 
   esprima@4.0.1: {}
-
-  eva-judge@https://codeload.github.com/eva-llm/eva-judge/tar.gz/165219b561cb1915ec4b309d44ea84228330e0e4:
-    dependencies:
-      '@ai-sdk/anthropic': 3.0.63(zod@4.3.6)
-      '@ai-sdk/google': 3.0.52(zod@4.3.6)
-      '@ai-sdk/mistral': 3.0.27(zod@4.3.6)
-      '@ai-sdk/openai': 3.0.47(zod@4.3.6)
-      ai: 6.0.134(zod@4.3.6)
-      lru-cache: 11.2.7
-      mustache: 4.2.0
-      zod: 4.3.6
 
   eventsource-parser@3.0.6: {}
 
