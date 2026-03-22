@@ -77,7 +77,7 @@ MIT
 
 ## LLM Providers and Settings
 
-The list of supported LLM providers and their configuration details are available in the README of the [`@eva-llm/eva-judge`](../eva-judge/README.md) package. Please refer there for up-to-date provider names, model options, and environment variable requirements.
+The list of supported LLM providers and their configuration details are available in the README of the [@eva-llm/eva-judge](https://github.com/eva-llm/eva-judge) package. Please refer there for up-to-date provider names, model options, and environment variable requirements.
 
 ## GEvalOptions and LLMRubricOptions
 
@@ -88,15 +88,15 @@ Both matchers accept options objects to customize evaluation:
   - `criteria` (string | string[]): Criteria or rubric for evaluation. (required)
   - `threshold` (number, optional): Pass threshold (default: pluginConfig.threshold).
   - `temperature` (number, optional): LLM temperature (default: pluginConfig.temperature).
-  - `provider` (string, optional): LLM provider to use (overrides global config).
-  - `model` (string, optional): LLM model to use (overrides global config).
+  - `provider` (string, optional): LLM provider to use (default: pluginConfig.provider).
+  - `model` (string, optional): LLM model to use (default: pluginConfig.model).
 
 - **LLMRubricOptions**
   - `criteria` (string | string[]): Criteria or rubric for evaluation. (required)
   - `threshold` (number, optional): Pass threshold (default: pluginConfig.threshold).
   - `temperature` (number, optional): LLM temperature (default: pluginConfig.temperature).
-  - `provider` (string, optional): LLM provider to use (overrides global config).
-  - `model` (string, optional): LLM model to use (overrides global config).
+  - `provider` (string, optional): LLM provider to use (default: pluginConfig.provider).
+  - `model` (string, optional): LLM model to use (default: pluginConfig.model).
 
 ## Default Plugin Configuration
 
@@ -107,7 +107,7 @@ You can override the default plugin configuration using the `configure` function
   provider: 'openai',
   model: 'gpt-4.1-mini',
   threshold: 0.5,
-  temperature: 0.0,
+  temperature: 0.0, // Recommended for judging
 }
 ```
 
