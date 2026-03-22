@@ -66,25 +66,34 @@ async function llmRubric(
     const _temperature = temperature ?? pluginConfig.temperature;
     const _provider = provider ?? pluginConfig.provider;
     const _model = model ?? pluginConfig.model;
-    const results: Record<string, any> = {};
     const failures: string[] = [];
 
     try {
-        for (const criterion of _criteria) {
-            const result = await llmRubricJudge(
-                received,
-                criterion,
-                _provider,
-                _model,
-                { temperature: _temperature },
-            );
+        const settledResults = await Promise.allSettled(
+            _criteria.map(criterion =>
+                llmRubricJudge(
+                    received,
+                    criterion,
+                    _provider,
+                    _model,
+                    { temperature: _temperature },
+                )
+            )
+        );
 
-            results[criterion] = result;
+        settledResults.forEach((settled, idx) => {
+            const criterion = _criteria[idx];
 
-            if (!result.pass || result.score <= _threshold) {
-                failures.push(`Criterion "${criterion}" failed: ${JSON.stringify(result)}`);
+            if (settled.status === 'fulfilled') {
+                const result = settled.value;
+
+                if (!result.pass || result.score <= _threshold) {
+                    failures.push(`Criterion "${criterion}" failed: ${JSON.stringify(result)}`);
+                }
+            } else {
+                failures.push(`Criterion "${criterion}" failed with error: ${settled.reason instanceof Error ? settled.reason.message : String(settled.reason)}`);
             }
-        }
+        });
 
         const pass = failures.length === 0;
 
@@ -124,26 +133,35 @@ async function gEval(
     const _temperature = temperature ?? pluginConfig.temperature;
     const _provider = options.provider ?? pluginConfig.provider;
     const _model = options.model ?? pluginConfig.model;
-    const results: Record<string, any> = {};
     const failures: string[] = [];
 
     try {
-        for (const criterion of _criteria) {
-            const result = await gEvalJudge(
-                prompt,
-                received,
-                criterion,
-                _provider,
-                _model,
-                { temperature: _temperature },
-            );
+        const settledResults = await Promise.allSettled(
+            _criteria.map(criterion =>
+                gEvalJudge(
+                    prompt,
+                    received,
+                    criterion,
+                    _provider,
+                    _model,
+                    { temperature: _temperature },
+                )
+            )
+        );
 
-            results[criterion] = result;
+        settledResults.forEach((settled, idx) => {
+            const criterion = _criteria[idx];
 
-            if (result.score <= _threshold) {
-                failures.push(`Criterion "${criterion}" failed: ${JSON.stringify(result)}`);
+            if (settled.status === 'fulfilled') {
+                const result = settled.value;
+
+                if (result.score <= _threshold) {
+                    failures.push(`Criterion "${criterion}" failed: ${JSON.stringify(result)}`);
+                }
+            } else {
+                failures.push(`Criterion "${criterion}" failed with error: ${settled.reason instanceof Error ? settled.reason.message : String(settled.reason)}`);
             }
-        }
+        });
 
         const pass = failures.length === 0;
 
