@@ -1,7 +1,7 @@
 {
   "name": "@eva-llm/llm-as-a-jest",
-  "version": "0.1.1",
-  "description": "jest plugin with llm-as-a-judge matchers basing on g-eval and llm-rubric",
+  "version": "0.1.2",
+  "description": "Jest plugin with LLM-as-a-Judge matchers basing on G-Eval and LLM-Rubric",
   "main": "jest.setup.js",
   "types": "jest.setup.d.ts",
   "files": [
@@ -11,8 +11,7 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "prepare": "pnpm run build",
-    "prepublishOnly": "pnpm run build"
+    "prepare": "pnpm run build"
   },
   "repository": {
     "type": "git",
@@ -32,6 +31,6 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@eva-llm/eva-judge": "^0.1.0"
+    "@eva-llm/eva-judge": "^0.1.1"
   }
 }

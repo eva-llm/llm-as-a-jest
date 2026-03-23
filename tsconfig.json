@@ -3,6 +3,7 @@
     "target": "esnext",
     "module": "commonjs",
     "declaration": true,
+    "removeComments": true,
     "emitDeclarationOnly": false,
     "esModuleInterop": true
   },
