@@ -1,4 +1,8 @@
-import { llmRubric as llmRubricJudge, gEval as gEvalJudge } from '@eva-llm/eva-judge';
+import {
+    llmRubric as llmRubricJudge,
+    gEval as gEvalJudge,
+    bEval as bEvalJudge,
+} from '@eva-llm/eva-judge';
 
 /**
  * Options for the llmRubric matcher.
@@ -116,7 +120,7 @@ async function llmRubric(
 }
 
 /**
- * Jest custom matcher for evaluating a string (e.g. agent answer) using G-Eval with a prompt and criteria.
+ * Jest custom matcher for evaluating a string (e.g. agent answer) using G-Eval (0.0-1.0) with a prompt and criteria.
  * @param this Jest matcher context
  * @param received The string to evaluate
  * @param options GEvalOptions for prompt, criteria, threshold, and temperature
@@ -184,21 +188,91 @@ async function gEval(
 }
 
 /**
- * Extends Jest expect with llmRubric and gEval matchers.
+ * Jest custom matcher for evaluating a string (e.g. agent answer) using binary G-Eval (0|1) with a prompt and criteria.
+ * @param this Jest matcher context
+ * @param received The string to evaluate
+ * @param options GEvalOptions for prompt, criteria, threshold, and temperature
+ * @returns Promise resolving to a Jest CustomMatcherResult
+ */
+async function bEval(
+    this: jest.MatcherContext,
+    received: string,
+    options: GEvalOptions
+): Promise<jest.CustomMatcherResult> {
+    const { prompt, criteria, threshold, temperature, provider, model } = options;
+    const _criteria = Array.isArray(criteria) ? criteria : [criteria];
+    const _threshold = threshold ?? pluginConfig.threshold;
+    const _temperature = temperature ?? pluginConfig.temperature;
+    const _provider = options.provider ?? pluginConfig.provider;
+    const _model = options.model ?? pluginConfig.model;
+    const failures: string[] = [];
+
+    try {
+        const settledResults = await Promise.allSettled(
+            _criteria.map(criterion =>
+                bEvalJudge(
+                    prompt,
+                    received,
+                    criterion,
+                    _provider,
+                    _model,
+                    { temperature: _temperature },
+                )
+            )
+        );
+
+        settledResults.forEach((settled, idx) => {
+            const criterion = _criteria[idx];
+
+            if (settled.status === 'fulfilled') {
+                const result = settled.value;
+
+                if (result.score <= _threshold) {
+                    failures.push(`Criterion "${criterion}" failed: ${JSON.stringify(result)}`);
+                }
+            } else {
+                failures.push(`Criterion "${criterion}" failed with error: ${settled.reason instanceof Error ? settled.reason.message : String(settled.reason)}`);
+            }
+        });
+
+        const pass = failures.length === 0;
+
+        return {
+            pass,
+            message: () => {
+                if (pass) {
+                    return 'Expected B-Eval to fail criteria checks, but all passed.';
+                } else {
+                    return `Expected B-Eval to pass all criteria checks, but some failed:\n${failures.join('\n')}`;
+                }
+            },
+        };
+    } catch (error) {
+        return {
+            pass: false,
+            message: () => `B-Eval evaluation failed with error: ${error instanceof Error ? error.message : String(error)}`,
+        };
+    }
+}
+
+/**
+ * Extends Jest expect with llmRubric, gEval, bEval matchers.
  */
 expect.extend({
     llmRubric,
     gEval,
+    bEval,
 });
 
 /**
- * Adds llmRubric and gEval to Jest's Matchers interface for TypeScript support.
+ * Adds llmRubric, gEval, and bEval to Jest's Matchers interface for TypeScript support.
  */
 declare global {
     namespace jest {
         interface Matchers<R> {
             llmRubric(options: LLMRubricOptions): Promise<R>;
             gEval(options: GEvalOptions): Promise<R>;
+            bEval(options: GEvalOptions): Promise<R>;
         }
     }
 }
