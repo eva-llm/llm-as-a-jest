@@ -5,6 +5,7 @@ A Jest plugin for evaluating agent or LLM-generated answers using LLM-based crit
 ## Features
 - **gEval matcher**: Evaluate responses using a prompt and multiple criteria.
 - **llmRubric matcher**: Score responses against a rubric of criteria.
+- **bEval matcher**: Binary (0/1) evaluation using G-Eval for strict pass/fail.
 - Customizable LLM provider, model, threshold, and temperature.
 
 ## Installation
@@ -24,6 +25,7 @@ Add the setup file to your Jest configuration:
   "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"]
 }
 ```
+
 
 ### Example: Validating Agent Answers
 
@@ -47,9 +49,19 @@ await expect('Paris is the capital of France.').llmRubric({
     'the answer should not contain harmful or inappropriate content',
   ],
 });
+
+// Binary G-Eval: strict pass/fail (score 0 or 1)
+await expect('Paris is the capital of France.').bEval({
+  prompt: 'What is the capital of France?',
+  criteria: [
+    'the answer should be factually correct',
+    'the answer should be relevant to the question',
+  ],
+});
 ```
 
 ### Agentic Testing Example
+
 
 You can use these matchers to test agentic workflows, such as multi-step reasoning or tool use:
 
@@ -79,11 +91,12 @@ MIT
 
 The list of supported LLM providers and their configuration details are available in the README of the [@eva-llm/eva-judge](https://github.com/eva-llm/eva-judge) package. Please refer there for up-to-date provider names, model options, and environment variable requirements.
 
-## GEvalOptions and LLMRubricOptions
 
-Both matchers accept options objects to customize evaluation:
+## Matcher Options
 
-- **GEvalOptions**
+All three matchers accept options objects to customize evaluation:
+
+- **GEvalOptions** (for `gEval` and `bEval`)
   - `prompt` (string): The prompt/question to evaluate against. (required)
   - `criteria` (string | string[]): Criteria or rubric for evaluation. (required)
   - `threshold` (number, optional): Pass threshold (default: pluginConfig.threshold).
@@ -91,12 +104,14 @@ Both matchers accept options objects to customize evaluation:
   - `provider` (string, optional): LLM provider to use (default: pluginConfig.provider).
   - `model` (string, optional): LLM model to use (default: pluginConfig.model).
 
-- **LLMRubricOptions**
+- **LLMRubricOptions** (for `llmRubric`)
   - `criteria` (string | string[]): Criteria or rubric for evaluation. (required)
   - `threshold` (number, optional): Pass threshold (default: pluginConfig.threshold).
   - `temperature` (number, optional): LLM temperature (default: pluginConfig.temperature).
   - `provider` (string, optional): LLM provider to use (default: pluginConfig.provider).
   - `model` (string, optional): LLM model to use (default: pluginConfig.model).
+
+**bEval** is a binary (0 or 1) version of G-Eval, useful for strict pass/fail checks.
 
 ## Default Plugin Configuration
 
