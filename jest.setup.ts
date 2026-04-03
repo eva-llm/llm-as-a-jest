@@ -13,18 +13,20 @@ interface LLMRubricOptions {
     temperature?: number;
     provider?: string;
     model?: string;
+    verbose?: boolean;
 }
 
 /**
  * Options for the gEval matcher.
  */
 interface GEvalOptions {
-    prompt: string;
+    query?: string;
     criteria: string | string[];
     threshold?: number;
     temperature?: number;
     provider?: string;
     model?: string;
+    verbose?: boolean;
 }
 
 /**
@@ -35,6 +37,7 @@ interface PluginConfig {
     model: string;
     threshold: number;
     temperature: number;
+    verbose: boolean;
 }
 
 let pluginConfig: PluginConfig = {
@@ -42,6 +45,7 @@ let pluginConfig: PluginConfig = {
     model: 'gpt-4.1-mini',
     threshold: 0.5,
     temperature: 0.0,
+    verbose: false,
 };
 
 /**
@@ -51,6 +55,17 @@ let pluginConfig: PluginConfig = {
 export function configure(config: PluginConfig): void {
     pluginConfig = { ...pluginConfig, ...config };
 }
+
+const truncate = (text: string, maxLength: number): string => {
+    if (text.length <= maxLength) {
+        return text;
+    }
+
+    return text.slice(0, maxLength) + `... [${text.length} chars total]`;
+}
+
+const QUERY_TRUNCATE_LENGTH = 150;
+const ANSWER_TRUNCATE_LENGTH = 300;
 
 /**
  * Jest custom matcher for evaluating a string (e.g. agent answer) using LLM-Rubric with criteria.
@@ -64,12 +79,15 @@ async function llmRubric(
     received: string,
     options: LLMRubricOptions
 ): Promise<jest.CustomMatcherResult> {
-    const { criteria, threshold, temperature, provider, model } = options;
+    const {
+        criteria,
+        threshold = pluginConfig.threshold,
+        temperature = pluginConfig.temperature,
+        provider = pluginConfig.provider,
+        model = pluginConfig.model,
+        verbose = pluginConfig.verbose,
+    } = options;
     const _criteria = Array.isArray(criteria) ? criteria : [criteria];
-    const _threshold = threshold ?? pluginConfig.threshold;
-    const _temperature = temperature ?? pluginConfig.temperature;
-    const _provider = provider ?? pluginConfig.provider;
-    const _model = model ?? pluginConfig.model;
     const failures: string[] = [];
 
     try {
@@ -78,9 +96,9 @@ async function llmRubric(
                 llmRubricJudge(
                     received,
                     criterion,
-                    _provider,
-                    _model,
-                    { temperature: _temperature },
+                    provider,
+                    model,
+                    { temperature },
                 )
             )
         );
@@ -91,7 +109,7 @@ async function llmRubric(
             if (settled.status === 'fulfilled') {
                 const result = settled.value;
 
-                if (!result.pass || result.score <= _threshold) {
+                if (!result.pass || result.score <= threshold) {
                     failures.push(`Criterion "${criterion}" failed: ${JSON.stringify(result)}`);
                 }
             } else {
@@ -107,14 +125,14 @@ async function llmRubric(
                 if (pass) {
                     return 'Expected LLM-Rubric to fail criteria checks, but all passed.';
                 } else {
-                    return `Expected LLM-Rubric to pass all criteria checks, but some failed:\n${failures.join('\n')}`;
+                    return `Expected LLM-Rubric to pass all criteria checks for answer "${verbose ? received : truncate(received, ANSWER_TRUNCATE_LENGTH)}", but some failed:\n${failures.join('\n')}`;
                 }
             },
         };
     } catch (error) {
         return {
             pass: false,
-            message: () => `LLM-Rubric evaluation failed with error: ${error instanceof Error ? error.message : String(error)}`,
+            message: () => `LLM-Rubric evaluation for answer "${verbose ? received : truncate(received, ANSWER_TRUNCATE_LENGTH)}" failed with error: ${error instanceof Error ? error.message : String(error)}`,
         };
     }
 }
@@ -131,24 +149,27 @@ async function gEval(
     received: string,
     options: GEvalOptions
 ): Promise<jest.CustomMatcherResult> {
-    const { prompt, criteria, threshold, temperature, provider, model } = options;
+    const {
+        query,
+        criteria,
+        threshold = pluginConfig.threshold,
+        temperature = pluginConfig.temperature,
+        provider = pluginConfig.provider,
+        model = pluginConfig.model,
+        verbose = pluginConfig.verbose,
+    } = options;
     const _criteria = Array.isArray(criteria) ? criteria : [criteria];
-    const _threshold = threshold ?? pluginConfig.threshold;
-    const _temperature = temperature ?? pluginConfig.temperature;
-    const _provider = options.provider ?? pluginConfig.provider;
-    const _model = options.model ?? pluginConfig.model;
     const failures: string[] = [];
 
     try {
         const settledResults = await Promise.allSettled(
             _criteria.map(criterion =>
                 gEvalJudge(
-                    prompt,
-                    received,
+                    query ? { query, answer: received } : received,
                     criterion,
-                    _provider,
-                    _model,
-                    { temperature: _temperature },
+                    provider,
+                    model,
+                    { temperature },
                 )
             )
         );
@@ -159,7 +180,7 @@ async function gEval(
             if (settled.status === 'fulfilled') {
                 const result = settled.value;
 
-                if (result.score <= _threshold) {
+                if (result.score <= threshold) {
                     failures.push(`Criterion "${criterion}" failed: ${JSON.stringify(result)}`);
                 }
             } else {
@@ -175,14 +196,14 @@ async function gEval(
                 if (pass) {
                     return 'Expected G-Eval to fail criteria checks, but all passed.';
                 } else {
-                    return `Expected G-Eval to pass all criteria checks, but some failed:\n${failures.join('\n')}`;
+                    return `Expected G-Eval to pass all criteria checks for ${`query "${verbose ? query : truncate(query, QUERY_TRUNCATE_LENGTH)}" and `}answer "${verbose ? received : truncate(received, ANSWER_TRUNCATE_LENGTH)}", but some failed:\n${failures.join('\n')}`;
                 }
             },
         };
     } catch (error) {
         return {
             pass: false,
-            message: () => `G-Eval evaluation failed with error: ${error instanceof Error ? error.message : String(error)}`,
+            message: () => `G-Eval evaluation for ${`query "${verbose ? query : truncate(query, QUERY_TRUNCATE_LENGTH)}" and `}answer "${verbose ? received : truncate(received, ANSWER_TRUNCATE_LENGTH)}" failed with error: ${error instanceof Error ? error.message : String(error)}`,
         };
     }
 }
@@ -199,24 +220,27 @@ async function bEval(
     received: string,
     options: GEvalOptions
 ): Promise<jest.CustomMatcherResult> {
-    const { prompt, criteria, threshold, temperature, provider, model } = options;
+    const {
+        query,
+        criteria,
+        threshold = pluginConfig.threshold,
+        temperature = pluginConfig.temperature,
+        provider = pluginConfig.provider,
+        model = pluginConfig.model,
+        verbose = pluginConfig.verbose,
+    } = options;
     const _criteria = Array.isArray(criteria) ? criteria : [criteria];
-    const _threshold = threshold ?? pluginConfig.threshold;
-    const _temperature = temperature ?? pluginConfig.temperature;
-    const _provider = options.provider ?? pluginConfig.provider;
-    const _model = options.model ?? pluginConfig.model;
     const failures: string[] = [];
 
     try {
         const settledResults = await Promise.allSettled(
             _criteria.map(criterion =>
                 bEvalJudge(
-                    prompt,
-                    received,
+                    query ? { query, answer: received } : received,
                     criterion,
-                    _provider,
-                    _model,
-                    { temperature: _temperature },
+                    provider,
+                    model,
+                    { temperature },
                 )
             )
         );
@@ -227,7 +251,7 @@ async function bEval(
             if (settled.status === 'fulfilled') {
                 const result = settled.value;
 
-                if (result.score <= _threshold) {
+                if (result.score <= threshold) {
                     failures.push(`Criterion "${criterion}" failed: ${JSON.stringify(result)}`);
                 }
             } else {
@@ -243,14 +267,14 @@ async function bEval(
                 if (pass) {
                     return 'Expected B-Eval to fail criteria checks, but all passed.';
                 } else {
-                    return `Expected B-Eval to pass all criteria checks, but some failed:\n${failures.join('\n')}`;
+                    return `Expected B-Eval to pass all criteria checks for ${`query "${verbose ? query : truncate(query, QUERY_TRUNCATE_LENGTH)}" and `}answer "${verbose ? received : truncate(received, ANSWER_TRUNCATE_LENGTH)}", but some failed:\n${failures.join('\n')}`;
                 }
             },
         };
     } catch (error) {
         return {
             pass: false,
-            message: () => `B-Eval evaluation failed with error: ${error instanceof Error ? error.message : String(error)}`,
+            message: () => `B-Eval evaluation for ${`query "${verbose ? query : truncate(query, QUERY_TRUNCATE_LENGTH)}" and `}answer "${verbose ? received : truncate(received, ANSWER_TRUNCATE_LENGTH)}" failed with error: ${error instanceof Error ? error.message : String(error)}`,
         };
     }
 }
