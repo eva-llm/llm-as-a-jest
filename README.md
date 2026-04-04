@@ -65,6 +65,7 @@ describe('llmAsJudge matcher', () => {
   - `model` (string, optional): LLM model to use (default: `pluginConfig.model`).
   - `verbose` (boolean, optional): If needs to show non-truncated query and answer in failed test error (default: `pluginConfig.verbose`).
 <br />
+
 - **LLMRubricOptions** (for `llmRubric`):
   - `criteria` (string | string[]): Criteria or rubric for evaluation. (required)
   - `threshold` (number, optional): Pass threshold (default: `pluginConfig.threshold`).
