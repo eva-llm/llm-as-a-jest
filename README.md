@@ -15,29 +15,36 @@ npm install @eva-llm/llm-as-a-jest
 ```
 
 ```ts
-const query = 'What is the capital of France?';
-const answer = 'Paris is the capital of France.';
+const SEC = 1000;
 
-await expect(answer).gEval({
-  criteria: 'answer should be factually correct',
-});
+describe('llmAsJudge matcher', () => {
 
-await expect(answer).gEval({
-  query,
-  criteria: 'answer should be coherent to question',
-});
+  it('should do smoke tests', async () => {
+    const query = 'What is the capital of France?';
+    const answer = 'Paris is the capital of France.';
 
-await expect(answer).bEval({
-  criteria: 'answer should be factually correct',
-});
+    await expect(answer).gEval({
+      criteria: 'answer should be factually correct',
+    });
 
-await expect(answer).bEval({
-  query,
-  criteria: 'answer should be coherent to question',
-});
+    await expect(answer).gEval({
+      query,
+      criteria: 'answer should be coherent to question',
+    });
 
-await expect(answer).llmRubric({
-  criteria: 'answer should be factually correct',
+    await expect(answer).bEval({
+      criteria: 'answer should be factually correct',
+    });
+
+    await expect(answer).bEval({
+      query,
+      criteria: 'answer should be coherent to question',
+    });
+
+    await expect(answer).llmRubric({
+      criteria: 'answer should be factually correct',
+    });
+  }, 60 * SEC);
 });
 ```
 
