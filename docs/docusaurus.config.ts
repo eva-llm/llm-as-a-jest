@@ -67,6 +67,12 @@ const config: Config = {
       },
       items: [
         {
+          href: 'https://eva-llm.github.io',
+          label: 'EVA-LLM Home',
+          position: 'left',
+          target: '_self',
+        },
+        {
           href: 'https://github.com/eva-llm/llm-as-a-jest',
           label: 'GitHub',
           position: 'right',
