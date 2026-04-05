@@ -1,6 +1,6 @@
 # llm-as-a-jest
 
-A `jest` plugin for evaluating agent or LLM-generated answers using LLM-based criteria matchers: **LLM-Rubric**, **G-Eval**, **B-Eval**. This package fits for testing agentic systems, chatbots, or any text, where needs to check correctness, relevance, and safety with advanced possibilities of AI.
+A `jest` plugin for evaluating human messages, agent or LLM-generated answers using LLM-based criteria matchers: **LLM-Rubric**, **G-Eval**, **B-Eval**. This package fits for testing agentic systems, chatbots, or any text, where needs to check correctness, relevance, and safety with advanced possibilities of AI.
 
 ## Quick start
 
