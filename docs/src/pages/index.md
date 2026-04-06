@@ -54,22 +54,22 @@ describe('llmAsJudge matcher', () => {
 
 ## Matcher Options
 
-- **GEvalOptions** (for `gEval` and `bEval`):
-  - `query` (string, optional): The question for answer if to evaluate query-answer pair.
-  - `criteria` (string | string[]): Criteria or rubric for evaluation. (required)
-  - `threshold` (number, optional): Pass threshold (default: `pluginConfig.threshold`).
-  - `temperature` (number, optional): LLM temperature (default: `pluginConfig.temperature`).
-  - `provider` (string, optional): LLM provider to use (default: `pluginConfig.provider`).
-  - `model` (string, optional): LLM model to use (default: `pluginConfig.model`).
-  - `verbose` (boolean, optional): If needs to show non-truncated query and answer in failed test error (default: `pluginConfig.verbose`).
-<br />
-- **LLMRubricOptions** (for `llmRubric`):
-  - `criteria` (string | string[]): Criteria or rubric for evaluation. (required)
-  - `threshold` (number, optional): Pass threshold (default: `pluginConfig.threshold`).
-  - `temperature` (number, optional): LLM temperature (default: `pluginConfig.temperature`).
-  - `provider` (string, optional): LLM provider to use (default: `pluginConfig.provider`).
-  - `model` (string, optional): LLM model to use (default: `pluginConfig.model`).
-  - `verbose` (boolean, optional): If needs to show non-truncated query and answer in failed test error (default: `pluginConfig.verbose`).
+### GEvalOptions (for G-Eval and B-Eval):
+- `query` (string, optional): The question for answer if to evaluate query-answer pair.
+- `criteria` (string | string[]): Criteria or rubric for evaluation. (required)
+- `threshold` (number, optional): Pass threshold (default: `pluginConfig.threshold`).
+- `temperature` (number, optional): LLM temperature (default: `pluginConfig.temperature`).
+- `provider` (string, optional): LLM provider to use (default: `pluginConfig.provider`).
+- `model` (string, optional): LLM model to use (default: `pluginConfig.model`).
+- `verbose` (boolean, optional): If needs to show non-truncated query and answer in failed test error (default: `pluginConfig.verbose`).
+
+### LLMRubricOptions (for LLM-Rubric):
+- `criteria` (string | string[]): Criteria or rubric for evaluation. (required)
+- `threshold` (number, optional): Pass threshold (default: `pluginConfig.threshold`).
+- `temperature` (number, optional): LLM temperature (default: `pluginConfig.temperature`).
+- `provider` (string, optional): LLM provider to use (default: `pluginConfig.provider`).
+- `model` (string, optional): LLM model to use (default: `pluginConfig.model`).
+- `verbose` (boolean, optional): If needs to show non-truncated query and answer in failed test error (default: `pluginConfig.verbose`).
 
 ## Default Plugin Configuration
 
