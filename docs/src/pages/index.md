@@ -1,5 +1,7 @@
 A `jest` plugin for evaluating human messages, agent or LLM-generated answers using LLM-based criteria matchers: **LLM-Rubric**, **G-Eval**, **B-Eval**. This package fits for testing agentic systems, chatbots, or any text, where needs to check correctness, relevance, and safety with advanced possibilities of AI.
 
+---
+
 ## Quick start
 
 ```bash
@@ -46,6 +48,8 @@ describe('llmAsJudge matcher', () => {
 });
 ```
 
+---
+
 ## Matchers
 
 - **llmRubric** - Evaluates a text against a rubric using an LLM. Returns a reason, pass/fail, and normalized score.
@@ -54,15 +58,15 @@ describe('llmAsJudge matcher', () => {
 
 ---
 
-### G-Eval vs B-Eval
+## G-Eval vs B-Eval
 The divergence between **G-Eval** and **B-Eval** reveals a critical **'Judgement Gap'**:
 
-* **G-Eval (The Auditor):** Scoring on a `0.0-1.0` scale allows the model to stay in a 'comfort zone', smoothing over internal contradictions.
-* **B-Eval (The Judge):** A binary `0|1` choice forces **Adjudication**. This 'forced choice' triggers the **Alignment Paradox**, exposing the struggle between **RLHF training** and objective facts.
+- **G-Eval (The Auditor):** Scoring on a `0.0-1.0` scale allows the model to stay in a 'comfort zone', smoothing over internal contradictions.
+- **B-Eval (The Judge):** A binary `0|1` choice forces **Adjudication**. This 'forced choice' triggers the **Alignment Paradox**, exposing the struggle between **RLHF training** and objective facts.
 
-**Conclusion:** **B-Eval** is a superior stress-test for **Epistemic Honesty**. By stripping away the safety net of grey-zone scoring, it reveals exactly where logic breaks under the weight of normative priors.
+**B-Eval** is a superior stress-test for **Epistemic Honesty**. By stripping away the safety net of grey-zone scoring, it reveals exactly where logic breaks under the weight of normative priors.
 
-More details in EVA-LLM [Dark Teaming Manifesto](https://eva-llm.github.io/dark-teaming).
+More details in [Dark Teaming Manifesto](https://eva-llm.github.io/dark-teaming).
 
 ---
 
@@ -85,6 +89,8 @@ More details in EVA-LLM [Dark Teaming Manifesto](https://eva-llm.github.io/dark-
 - `model` (string, optional): LLM model to use (default: `pluginConfig.model`).
 - `verbose` (boolean, optional): If needs to show non-truncated query and answer in failed test error (default: `pluginConfig.verbose`).
 
+---
+
 ## Default Plugin Configuration
 
 You can override the default plugin configuration using the `configure` function. The defaults are:
@@ -100,6 +106,8 @@ You can override the default plugin configuration using the `configure` function
 ```
 
 Call `configure({ ... })` in your setup to change these values globally for all matchers.
+
+---
 
 ## LLM Providers and Settings
 
@@ -121,6 +129,3 @@ Specify the provider name and model name in `llmRubric`, `gEval`, or `bEval`.
 > **Note:** Each provider integration is based on its respective ai-sdk package. Be sure to follow the provider's documentation for setup and authentication. Most providers require you to export an API key or token as an environment variable (e.g., `export OPENAI_API_KEY=...`).
 
 More info about available providers and models in [@eva-llm/eva-judge](https://eva-llm.github.io/eva-judge).
-
-## License
-MIT
