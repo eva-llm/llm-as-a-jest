@@ -1,6 +1,6 @@
 {
   "name": "@eva-llm/llm-as-a-jest",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Jest plugin with LLM-as-a-Judge matchers basing on G-Eval, B-Eval, and LLM-Rubric",
   "main": "jest.setup.js",
   "types": "jest.setup.d.ts",
@@ -31,6 +31,6 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@eva-llm/eva-judge": "^1.0.4"
+    "@eva-llm/eva-judge": "^1.0.5"
   }
 }
