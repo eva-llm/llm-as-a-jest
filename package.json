@@ -10,7 +10,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "test": "jest",
+    "test": "jest jest.setup.test.ts",
+    "test:coverage": "jest jest.setup.test.ts --coverage",
     "prepare": "pnpm run build"
   },
   "repository": {

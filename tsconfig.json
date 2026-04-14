@@ -8,5 +8,5 @@
     "esModuleInterop": true
   },
   "include": ["**/*.ts"],
-  "exclude": ["node_modules", "tests", "docs"]
+  "exclude": ["node_modules", "examples", "docs", "tests", "jest.setup.test.ts"]
 }
