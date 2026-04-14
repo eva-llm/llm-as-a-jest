@@ -72,6 +72,10 @@ More details in [Dark Teaming Manifesto](https://eva-llm.github.io/dark-teaming)
 
 ## Matcher Options
 
+Matcher `options` parameter forward any Vercel AI SDK [generateText options](https://ai-sdk.dev/docs/reference/ai-sdk-core/generate-text#api-signature).
+
+> NOTE! Internal values such as `model`, `system`, and `prompt` are managed by the Judge and will override corresponding values in the `options` object to ensure evaluation integrity.
+
 ### GEvalOptions (for G-Eval and B-Eval):
 - `query` (string, optional): The question for answer if to evaluate query-answer pair.
 - `criteria` (string | string[]): Criteria or rubric for evaluation. (required)
@@ -80,6 +84,7 @@ More details in [Dark Teaming Manifesto](https://eva-llm.github.io/dark-teaming)
 - `provider` (string, optional): LLM provider to use (default: `pluginConfig.provider`).
 - `model` (string, optional): LLM model to use (default: `pluginConfig.model`).
 - `verbose` (boolean, optional): If needs to show non-truncated query and answer in failed test error (default: `pluginConfig.verbose`).
+- `options` (object, optional): Forwarded Vercel ai-sdk options (default: `{}`).
 
 ### LLMRubricOptions (for LLM-Rubric):
 - `criteria` (string | string[]): Criteria or rubric for evaluation. (required)
@@ -88,6 +93,7 @@ More details in [Dark Teaming Manifesto](https://eva-llm.github.io/dark-teaming)
 - `provider` (string, optional): LLM provider to use (default: `pluginConfig.provider`).
 - `model` (string, optional): LLM model to use (default: `pluginConfig.model`).
 - `verbose` (boolean, optional): If needs to show non-truncated query and answer in failed test error (default: `pluginConfig.verbose`).
+- `options` (object, optional): Forwarded Vercel ai-sdk options (default: `{}`).
 
 ---
 

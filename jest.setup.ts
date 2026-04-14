@@ -4,6 +4,8 @@ import {
     bEval as bEvalJudge,
 } from '@eva-llm/eva-judge';
 
+
+type VercelOptions = Record<string, any>;
 /**
  * Options for the llmRubric matcher.
  */
@@ -14,6 +16,7 @@ interface LLMRubricOptions {
     provider?: string;
     model?: string;
     verbose?: boolean;
+    options?: VercelOptions;
 }
 
 /**
@@ -27,6 +30,7 @@ interface GEvalOptions {
     provider?: string;
     model?: string;
     verbose?: boolean;
+    options?: VercelOptions;
 }
 
 /**
@@ -86,6 +90,7 @@ async function llmRubric(
         provider = pluginConfig.provider,
         model = pluginConfig.model,
         verbose = pluginConfig.verbose,
+        options: vercelOptions = {},
     } = options;
     const _criteria = Array.isArray(criteria) ? criteria : [criteria];
     const failures: string[] = [];
@@ -98,7 +103,7 @@ async function llmRubric(
                     criterion,
                     provider,
                     model,
-                    { temperature },
+                    { ...vercelOptions, temperature },
                 )
             )
         );
@@ -157,6 +162,7 @@ async function gEval(
         provider = pluginConfig.provider,
         model = pluginConfig.model,
         verbose = pluginConfig.verbose,
+        options: vercelOptions = {},
     } = options;
     const _criteria = Array.isArray(criteria) ? criteria : [criteria];
     const failures: string[] = [];
@@ -169,7 +175,7 @@ async function gEval(
                     criterion,
                     provider,
                     model,
-                    { temperature },
+                    { ...vercelOptions, temperature },
                 )
             )
         );
@@ -228,6 +234,7 @@ async function bEval(
         provider = pluginConfig.provider,
         model = pluginConfig.model,
         verbose = pluginConfig.verbose,
+        options: vercelOptions = {},
     } = options;
     const _criteria = Array.isArray(criteria) ? criteria : [criteria];
     const failures: string[] = [];
@@ -240,7 +247,7 @@ async function bEval(
                     criterion,
                     provider,
                     model,
-                    { temperature },
+                    { ...vercelOptions, temperature },
                 )
             )
         );
