@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">eva-judge</title><meta data-rh="true" property="og:title" content="eva-judge"><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://eva-llm.github.io/llm-as-a-jest/img/eva-llm.jpg"><meta data-rh="true" name="twitter:image" content="https://eva-llm.github.io/llm-as-a-jest/img/eva-llm.jpg"><meta data-rh="true" property="og:url" content="https://eva-llm.github.io/llm-as-a-jest/"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docusaurus_tag" content="default"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docsearch:docusaurus_tag" content="default"><meta data-rh="true" name="description" content="A jest plugin for evaluating human messages, agent or LLM-generated answers using LLM-based criteria matchers: LLM-Rubric, G-Eval, B-Eval. This package fits for testing agentic systems, chatbots, or any text, where needs to check correctness, relevance, and safety with advanced possibilities of AI."><meta data-rh="true" property="og:description" content="A jest plugin for evaluating human messages, agent or LLM-generated answers using LLM-based criteria matchers: LLM-Rubric, G-Eval, B-Eval. This package fits for testing agentic systems, chatbots, or any text, where needs to check correctness, relevance, and safety with advanced possibilities of AI."><link data-rh="true" rel="icon" href="/llm-as-a-jest/img/eva-llm.ico"><link data-rh="true" rel="canonical" href="https://eva-llm.github.io/llm-as-a-jest/"><link data-rh="true" rel="alternate" href="https://eva-llm.github.io/llm-as-a-jest/" hreflang="en"><link data-rh="true" rel="alternate" href="https://eva-llm.github.io/llm-as-a-jest/" hreflang="x-default"><script data-rh="true">function insertBanner(){var n=document.createElement("div");n.id="__docusaurus-base-url-issue-banner-container";n.innerHTML='\n<div id="__docusaurus-base-url-issue-banner" style="border: thick solid red; background-color: rgb(255, 230, 179); margin: 20px; padding: 20px; font-size: 20px;">\n   <p style="font-weight: bold; font-size: 30px;">Your Docusaurus site did not load properly.</p>\n   <p>A very common reason is a wrong site <a href="https://docusaurus.io/docs/docusaurus.config.js/#baseUrl" style="font-weight: bold;">baseUrl configuration</a>.</p>\n   <p>Current configured baseUrl = <span style="font-weight: bold; color: red;">/llm-as-a-jest/</span> </p>\n   <p>We suggest trying baseUrl = <span id="__docusaurus-base-url-issue-banner-suggestion-container" style="font-weight: bold; color: green;"></span></p>\n</div>\n',document.body.prepend(n);var e=document.getElementById("__docusaurus-base-url-issue-banner-suggestion-container"),s=window.location.pathname,o="/"===s.substr(-1)?s:s+"/";e.innerHTML=o}document.addEventListener("DOMContentLoaded",function(){void 0===window.docusaurus&&insertBanner()})</script><link rel="stylesheet" href="/llm-as-a-jest/assets/css/styles.399d0dad.css">
-<script src="/llm-as-a-jest/assets/js/runtime~main.9d9f1405.js" defer="defer"></script>
+<script src="/llm-as-a-jest/assets/js/runtime~main.af2bbf69.js" defer="defer"></script>
 <script src="/llm-as-a-jest/assets/js/main.bfd1d5f8.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -35,6 +35,10 @@
 <p>More details in <a href="https://eva-llm.github.io/dark-teaming" target="_blank" rel="noopener noreferrer" class="">Dark Teaming Manifesto</a>.</p>
 <hr>
 <h2 class="anchor anchorTargetStickyNavbar_UCMm" id="matcher-options">Matcher Options<a href="#matcher-options" class="hash-link" aria-label="Direct link to Matcher Options" title="Direct link to Matcher Options" translate="no">​</a></h2>
+<p>Matcher <code>options</code> parameter forward any Vercel AI SDK <a href="https://ai-sdk.dev/docs/reference/ai-sdk-core/generate-text#api-signature" target="_blank" rel="noopener noreferrer" class="">generateText options</a>.</p>
+<blockquote>
+<p>NOTE! Internal values such as <code>model</code>, <code>system</code>, and <code>prompt</code> are managed by the Judge and will override corresponding values in the <code>options</code> object to ensure evaluation integrity.</p>
+</blockquote>
 <h3 class="anchor anchorTargetStickyNavbar_UCMm" id="gevaloptions-for-g-eval-and-b-eval">GEvalOptions (for G-Eval and B-Eval):<a href="#gevaloptions-for-g-eval-and-b-eval" class="hash-link" aria-label="Direct link to GEvalOptions (for G-Eval and B-Eval):" title="Direct link to GEvalOptions (for G-Eval and B-Eval):" translate="no">​</a></h3>
 <ul>
 <li class=""><code>query</code> (string, optional): The question for answer if to evaluate query-answer pair.</li>
@@ -44,6 +48,7 @@
 <li class=""><code>provider</code> (string, optional): LLM provider to use (default: <code>pluginConfig.provider</code>).</li>
 <li class=""><code>model</code> (string, optional): LLM model to use (default: <code>pluginConfig.model</code>).</li>
 <li class=""><code>verbose</code> (boolean, optional): If needs to show non-truncated query and answer in failed test error (default: <code>pluginConfig.verbose</code>).</li>
+<li class=""><code>options</code> (object, optional): Forwarded Vercel ai-sdk options (default: <code>{}</code>).</li>
 </ul>
 <h3 class="anchor anchorTargetStickyNavbar_UCMm" id="llmrubricoptions-for-llm-rubric">LLMRubricOptions (for LLM-Rubric):<a href="#llmrubricoptions-for-llm-rubric" class="hash-link" aria-label="Direct link to LLMRubricOptions (for LLM-Rubric):" title="Direct link to LLMRubricOptions (for LLM-Rubric):" translate="no">​</a></h3>
 <ul>
@@ -53,6 +58,7 @@
 <li class=""><code>provider</code> (string, optional): LLM provider to use (default: <code>pluginConfig.provider</code>).</li>
 <li class=""><code>model</code> (string, optional): LLM model to use (default: <code>pluginConfig.model</code>).</li>
 <li class=""><code>verbose</code> (boolean, optional): If needs to show non-truncated query and answer in failed test error (default: <code>pluginConfig.verbose</code>).</li>
+<li class=""><code>options</code> (object, optional): Forwarded Vercel ai-sdk options (default: <code>{}</code>).</li>
 </ul>
 <hr>
 <h2 class="anchor anchorTargetStickyNavbar_UCMm" id="default-plugin-configuration">Default Plugin Configuration<a href="#default-plugin-configuration" class="hash-link" aria-label="Direct link to Default Plugin Configuration" title="Direct link to Default Plugin Configuration" translate="no">​</a></h2>
