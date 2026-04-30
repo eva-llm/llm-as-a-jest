@@ -13,7 +13,7 @@
     "lint": "eslint jest.setup.ts",
     "test": "jest jest.setup.test.ts",
     "test:coverage": "jest jest.setup.test.ts --coverage",
-    "prepare": "pnpm run build"
+    "prepare": "pnpm run build && husky"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^25.1.0",
     "eslint": "^10.2.1",
+    "husky": "^9.1.7",
     "jest": "^30.2.0",
     "ts-jest": "^29.2.5",
     "typescript": "^5.9.3",
