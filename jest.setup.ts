@@ -5,6 +5,7 @@ import {
 } from '@eva-llm/eva-judge';
 
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type VercelOptions = Record<string, any>;
 /**
  * Options for the llmRubric matcher.
@@ -299,6 +300,7 @@ expect.extend({
  * Adds llmRubric, gEval, and bEval to Jest's Matchers interface for TypeScript support.
  */
 declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace jest {
         interface Matchers<R> {
             llmRubric(options: LLMRubricOptions): Promise<R>;
