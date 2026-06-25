@@ -1,12 +1,17 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "module": "commonjs",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "rootDir": "./src",
+    "outDir": "./dst",
+    "strict": true,
     "declaration": true,
     "removeComments": true,
     "emitDeclarationOnly": false,
-    "esModuleInterop": true
+    "skipLibCheck": true,
+    "types": ["node", "jest"]
   },
-  "include": ["**/*.ts"],
-  "exclude": ["node_modules", "examples", "docs", "tests", "jest.setup.test.ts"]
+  "include": ["./src"],
+  "exclude": ["node_modules", "dst"]
 }

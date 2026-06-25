@@ -1,6 +1,20 @@
+const { createDefaultPreset } = require("ts-jest");
+
+const tsJestTransformCfg = createDefaultPreset({
+  diagnostics: {
+    ignoreCodes: [151002, 1192],
+  },
+}).transform;
+
+/** @type {import("jest").Config} **/
 module.exports = {
-  preset: 'ts-jest',
-  setupFilesAfterEnv: ['./jest.setup.ts'],
+  testEnvironment: "node",
+  transform: {
+    ...tsJestTransformCfg,
+  },
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
+  },
   coverageDirectory: "coverage",
   coverageProvider: "v8",
   collectCoverageFrom: [
@@ -12,10 +26,10 @@ module.exports = {
   coverageReporters: ["text", "lcov", "clover"],
   coverageThreshold: {
     global: {
-      branches: 63,
-      functions: 70,
-      lines: 84,
-      statements: 84,
+      branches: 95,
+      functions: 54,
+      lines: 95,
+      statements: 95,
     },
   },
 };
