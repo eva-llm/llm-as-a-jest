@@ -1,4 +1,4 @@
-import { configure } from './jest.setup';
+import { configure } from '../src/index';
 
 jest.mock('@eva-llm/eva-judge', () => ({
     llmRubric: jest.fn(),

@@ -1,3 +1,8 @@
+import { expect } from '@jest/globals';
+import type {
+    MatcherContext,
+    AsyncExpectationResult,
+} from 'expect';
 import {
     llmRubric as llmRubricJudge,
     gEval as gEvalJudge,
@@ -61,9 +66,9 @@ export function configure(config: PluginConfig): void {
     pluginConfig = { ...pluginConfig, ...config };
 }
 
-const truncate = (text: string, maxLength: number): string => {
-    if (text.length <= maxLength) {
-        return text;
+const truncate = (text: string | undefined, maxLength: number): string => {
+    if (!text || text.length <= maxLength) {
+        return text || '';
     }
 
     return text.slice(0, maxLength) + `... [${text.length} chars total]`;
@@ -80,10 +85,10 @@ const ANSWER_TRUNCATE_LENGTH = 300;
  * @returns Promise resolving to a Jest CustomMatcherResult
  */
 async function llmRubric(
-    this: jest.MatcherContext,
+    this: MatcherContext,
     received: string,
     options: LLMRubricOptions
-): Promise<jest.CustomMatcherResult> {
+): AsyncExpectationResult {
     const {
         criteria,
         threshold = pluginConfig.threshold,
@@ -151,10 +156,10 @@ async function llmRubric(
  * @returns Promise resolving to a Jest CustomMatcherResult
  */
 async function gEval(
-    this: jest.MatcherContext,
+    this: MatcherContext,
     received: string,
     options: GEvalOptions
-): Promise<jest.CustomMatcherResult> {
+): AsyncExpectationResult {
     const {
         query,
         criteria,
@@ -223,10 +228,10 @@ async function gEval(
  * @returns Promise resolving to a Jest CustomMatcherResult
  */
 async function bEval(
-    this: jest.MatcherContext,
+    this: MatcherContext,
     received: string,
     options: GEvalOptions
-): Promise<jest.CustomMatcherResult> {
+): AsyncExpectationResult {
     const {
         query,
         criteria,

@@ -2,18 +2,18 @@
   "name": "@eva-llm/llm-as-a-jest",
   "version": "1.0.5",
   "description": "Jest plugin with LLM-as-a-Judge matchers basing on G-Eval, B-Eval, and LLM-Rubric",
-  "main": "jest.setup.js",
-  "types": "jest.setup.d.ts",
+  "main": "dst/index.js",
+  "types": "dst/index.d.ts",
   "files": [
-    "jest.setup.js",
-    "jest.setup.d.ts"
+    "dst/index.js",
+    "dst/index.d.ts"
   ],
   "scripts": {
     "build": "tsc",
-    "lint": "eslint jest.setup.ts",
-    "test": "jest jest.setup.test.ts",
-    "test:coverage": "jest jest.setup.test.ts --coverage",
-    "prepare": "pnpm run build && husky"
+    "prepare": "pnpm run build && husky",
+    "lint": "eslint src",
+    "test": "jest tests",
+    "test:coverage": "jest tests --coverage"
   },
   "repository": {
     "type": "git",
@@ -27,16 +27,18 @@
   "homepage": "https://eva-llm.github.io/llm-as-a-jest",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@jest/globals": "^30.4.1",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.1.0",
-    "eslint": "^10.2.1",
+    "@types/node": "^26.0.1",
+    "eslint": "^10.5.0",
+    "expect": "^30.4.1",
     "husky": "^9.1.7",
-    "jest": "^30.2.0",
-    "ts-jest": "^29.2.5",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.59.1"
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.11",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.62.0"
   },
   "dependencies": {
-    "@eva-llm/eva-judge": "^1.0.6"
+    "@eva-llm/eva-judge": "^1.0.7"
   }
 }

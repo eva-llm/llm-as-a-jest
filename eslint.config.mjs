@@ -6,9 +6,6 @@ export default tseslint.config(
   eslint.configs.recommended,
   tseslint.configs.recommended,
   {
-    files: ['jest.setup.ts'],
-  },
-  {
-    ignores: ['**/*', '!jest.setup.ts'],
+    files: ['src/index.ts'],
   },
 );
